@@ -8,5 +8,7 @@
 add_action( 'the_content', 'hello_world_text' );
 
 function hello_world_text ( $content ) {
-    return $content .= '<p>Hello Plugin!</p>';
+	if(is_page('checkout')) {
+		return $content .= '<p>Hello Plugin!</p>';
+    }
 } 
