@@ -4,9 +4,11 @@ Plugin do zmiany ceny dostawy w zależności od miejsca dostawy
 
 ## Wymagania
 
-Zainstalowane WooCommerce
+Zainstalowane WordPress i WooCommerce
 
-Klucz do Google Maps Platform, do usługi Distance Matrix API
+2 Klucze do Google Maps Platform:
+Backend: Distance Matrix API i Geocoding API
+Frontend: Maps JavaScript API
 
 ## Ustawienia
 

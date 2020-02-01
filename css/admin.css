@@ -1,0 +1,16 @@
+.shipping-area-options {
+  width: 100%;
+  display: flex;
+}
+
+.shipping-area-options > :first-child {
+  width: 550px;
+}
+
+.shipping-area-options > :last-child {
+  width: calc(100% - 550px);
+}
+
+#google-map {
+  height: 100%;
+}

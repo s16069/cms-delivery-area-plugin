@@ -34,8 +34,8 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	 */
 	public function init() {
 		$this->instance_form_fields = include 'settings-area-rate.php';
-		$this->key                  = $this->get_option( 'key' );
-		$this->default_cost         = $this->get_option( 'default_cost' );
+		$this->backend_key          = $this->get_option( 'backend_key' );
+		$this->frontend_key         = $this->get_option( 'frontend_key' );
 		$this->zone_1_distance      = intval( $this->get_option( 'zone_1_distance' ) );
 		$this->zone_1_cost          = $this->get_option( 'zone_1_cost' );
 		$this->zone_2_distance      = intval( $this->get_option( 'zone_2_distance' ) );
@@ -58,7 +58,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 			return;
 		}
 
-		$data = $this->google_data( $store_address, $client_address, $this->key );
+		$data = $this->google_distance( $store_address, $client_address, $this->backend_key );
 		if ($data === null) {
 			return;
 		}
@@ -107,8 +107,12 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	 *   "status" : "OK"
 	 * }
 	 */
-	private function google_data($store_address, $client_address, $key) {
-		$url = $this->prepare_url( $store_address, $client_address, $this->key );
+	private function google_distance($store_address, $client_address, $key) {
+		if ( empty( $key ) ) {
+			return null; // TODO
+		}
+
+		$url = $this->prepare_url( $store_address, $client_address, $key );
 
 		$request = wp_remote_get( $url );
 
@@ -144,7 +148,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		}
 
 		return $element;
-	}	
+	}
 
 	private function get_client_address( $destination ) {
 		$city        = $destination['city'];
@@ -180,6 +184,50 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	}
 
 	/**
+	 * {
+   *  "lat" : 52.223802,
+   *  "lng" : 20.9940479
+   * }
+	 */
+	private function google_coordinates($address, $key) {
+		if ( empty( $key ) ) {
+			return null; // TODO
+		}
+
+		$address = urlencode( trim( $address ) );
+		$key = urlencode( trim( $key ) );
+
+		$url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $address . '&key=' . $key;
+
+		$request = wp_remote_get( $url );
+
+		if( is_wp_error( $request ) ) {
+			return null;	// TODO
+		}
+
+		$body = wp_remote_retrieve_body( $request );
+
+		$data = json_decode( $body );
+
+		if ( empty( $data ) ) {
+			return null; // TODO
+		}
+
+		if ( $data->status != 'OK' ) {
+			return null; // TODO
+		}
+
+		$results = $data->results;
+		if ( count( $results ) != 1 ) {
+			return null; // TODO
+		}
+		
+		$result = $results[0];
+
+		return $result->geometry->location;
+	}
+
+	/**
 	 * Sanitize the cost field.
 	 *
 	 * @since 3.4.0
@@ -191,5 +239,36 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$value = wp_kses_post( trim( wp_unslash( $value ) ) );
 		$value = str_replace( array( get_woocommerce_currency_symbol(), html_entity_decode( get_woocommerce_currency_symbol() ) ), '', $value );
 		return $value;
+	}
+
+	public function get_admin_options_html() {
+		
+		$options_html = parent::get_admin_options_html();
+		$map_html = $this->get_map_html();
+		
+		return '<div class="shipping-area-options"><div>' . $options_html . '</div><div>' . $map_html . '</div></div>';
+
+		return $html;
+	}
+
+	private function get_map_html() {
+		if ( empty( $this->backend_key ) || empty( $this->frontend_key ) ) {
+			return 'Enter Api Keys to show map';
+		} else {
+
+			$coordinates = $this->google_coordinates( $this->get_store_address(), $this->backend_key );
+
+			if ( $coordinates === null ) {
+				return 'Store location not found';
+			}
+
+			$key = urlencode( trim( $this->frontend_key ) );
+			$url = 'https://maps.googleapis.com/maps/api/js?key=' . $key;
+
+			wp_enqueue_script( 'cms-delivery-area-plugin-maps', $url, array('cms-delivery-area-plugin-admin-script') );
+
+			return '<div id="google-map"></div>' .
+				'<script>(function() { initAreas(); initMap({lat: ' . $coordinates->lat . ', lng: ' . $coordinates->lng .'}); })();</script>';
+		}
 	}
 }

@@ -22,12 +22,23 @@ function woocommerce_notice() {
   ?><div class="error"><p>Sorry, but this plugin requires WooCommerce to be installed and active.</p></div><?php
 }
 
+add_action( 'admin_enqueue_scripts', 'add_admin_scripts' );
+function add_admin_scripts() {
+	wp_enqueue_style( 'cms-delivery-area-plugin-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin.css' );
+	wp_enqueue_script( 'cms-delivery-area-plugin-admin-script', plugin_dir_url( __FILE__ ) . 'js/admin.js' );
+}
 
-add_filter( 'woocommerce_shipping_methods', 'add_shipping_method');
+
+add_filter( 'woocommerce_shipping_methods', 'add_shipping_method' );
 function add_shipping_method( $shipping_methods ) {
 	require_once plugin_dir_path( __FILE__ ) . 'class-wc-shipping-area-rate.php';
 
 	$shipping_methods['area_rate'] = 'WC_Shipping_Area_Rate';
 
 	return $shipping_methods;
+}
+
+add_filter( 'woocommerce_no_available_payment_methods_message', 'make_no_available_payment_methods_message' );
+function make_no_available_payment_methods_message() {
+	return 'Sorry, we cannot recognise your address.';
 }
