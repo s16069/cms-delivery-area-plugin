@@ -65,7 +65,8 @@
 			mapTypeId: 'terrain'
 		});
 
-		for (const area of areas) {
+		for(let i=areas.length - 1; i>=0; i--) {
+			const area = areas[i];
 			const circle = new google.maps.Circle({
 				strokeColor: area.color,
 				strokeOpacity: 0.8,
