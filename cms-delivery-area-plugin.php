@@ -3,6 +3,8 @@
  * Plugin Name: cms-delivery-area-plugin
  * Description: cms-delivery-area-plugin
  * Version: 1.0
+ * Text Domain: cms-plugin
+ * Domain Path: /languages/
  */
 
 add_action( 'admin_init', 'check_woocommerce' );
@@ -36,4 +38,9 @@ function add_shipping_method( $shipping_methods ) {
 	$shipping_methods['area_rate'] = 'WC_Shipping_Area_Rate';
 
 	return $shipping_methods;
+}
+
+add_action( 'plugins_loaded', 'cms_load_plugin_textdomain' );
+function cms_load_plugin_textdomain() {
+	load_plugin_textdomain( 'cms-plugin', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
 }

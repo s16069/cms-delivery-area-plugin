@@ -1,0 +1,116 @@
+# Copyright (C) 2020 
+# This file is distributed under the same license as the cms-delivery-area-plugin plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: cms-delivery-area-plugin 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cms-delivery-area-plugin\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-02-01T11:07:47+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: cms-plugin\n"
+
+#. Plugin Name of the plugin
+#. Description of the plugin
+msgid "cms-delivery-area-plugin"
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:20
+msgid "Area Rate Shipping Method"
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:21
+#: class-wc-shipping-area-rate.php:22
+msgid "Area Rate Shipping method"
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:54
+msgid "Enter correct address"
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:56
+msgid "Error: "
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:70
+msgid "Please enter delivery address"
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:95
+msgid "Zone 1"
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:98
+msgid "Zone 2"
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:101
+msgid "Zone 3"
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:115
+msgid "Sorry, your address is too far away"
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:134
+#: class-wc-shipping-area-rate.php:216
+msgid "No API Key. Contact site owner."
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:142
+#: class-wc-shipping-area-rate.php:227
+msgid "Cannot connect to remote API. Contact site owner."
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:150
+#: class-wc-shipping-area-rate.php:235
+msgid "Cannot receive data from remote API. Contact site owner."
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:154
+#: class-wc-shipping-area-rate.php:239
+msgid "Bad response from remote API. Contact site owner."
+msgstr ""
+
+#: class-wc-shipping-area-rate.php:159
+#: class-wc-shipping-area-rate.php:164
+#: class-wc-shipping-area-rate.php:169
+#: class-wc-shipping-area-rate.php:244
+msgid "Address not found. Enter correct address."
+msgstr ""
+
+#: settings-area-rate.php:7
+msgid "Backend API Key"
+msgstr ""
+
+#: settings-area-rate.php:13
+msgid "Frontend API Key"
+msgstr ""
+
+#: settings-area-rate.php:19
+msgid "Zone 1 distance (m)"
+msgstr ""
+
+#: settings-area-rate.php:25
+msgid "Zone 1 Cost"
+msgstr ""
+
+#: settings-area-rate.php:32
+msgid "Zone 2 distance (m)"
+msgstr ""
+
+#: settings-area-rate.php:38
+msgid "Zone 2 Cost"
+msgstr ""
+
+#: settings-area-rate.php:45
+msgid "Zone 3 distance (m)"
+msgstr ""
+
+#: settings-area-rate.php:51
+msgid "Zone 3 Cost"
+msgstr ""

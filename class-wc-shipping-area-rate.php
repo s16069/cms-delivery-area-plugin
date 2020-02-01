@@ -17,9 +17,9 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	public function __construct( $instance_id = 0 ) {
 		$this->id                    = 'area_rate';
 		$this->instance_id           = absint( $instance_id );
-		$this->method_title          = __( 'Area Rate Shipping Method' );
-		$this->method_description    = __( 'Area Rate Shipping method' );
-		$this->title                 = __( 'Area Rate Shipping method' );
+		$this->method_title          = __( 'Area Rate Shipping Method', 'cms-plugin' );
+		$this->method_description    = __( 'Area Rate Shipping method', 'cms-plugin' );
+		$this->title                 = __( 'Area Rate Shipping method', 'cms-plugin' );
 		$this->supports              = array(
 			'shipping-zones',
 			'instance-settings',
@@ -51,9 +51,9 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	public function make_no_available_payment_methods_message() {
 		global $my_error_message;
 
-		$msg = empty( $my_error_message ) ? __ ( 'Enter correct address' ) : $my_error_message;
+		$msg = empty( $my_error_message ) ? __ ( 'Enter correct address', 'cms-plugin' ) : $my_error_message;
 
-		return 'Error: ' . $msg;
+		return __( 'Error: ', 'cms-plugin') . $msg;
 	}
 
 	/**
@@ -67,7 +67,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$store_address = $this->get_store_address();
 		$client_address = $this->get_client_address( $package['destination'] );
 		if ($client_address === null) {
-			$my_error_message = __( 'Please enter delivery address' );
+			$my_error_message = __( 'Please enter delivery address', 'cms-plugin' );
 			return;
 		}
 
@@ -92,13 +92,13 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 
 		if ( $distance_val < $this->zone_1_distance) {
 			$cost = $this->zone_1_cost;
-			$label = __( 'Zone 1' );
+			$label = __( 'Zone 1', 'cms-plugin' );
 		} else if ( $distance_val < $this->zone_2_distance) {
 			$cost = $this->zone_2_cost;
-			$label = __( 'Zone 2' );
+			$label = __( 'Zone 2', 'cms-plugin' );
 		} else if ( $distance_val < $this->zone_3_distance) {
 			$cost = $this->zone_3_cost;
-			$label = __( 'Zone 3' );
+			$label = __( 'Zone 3', 'cms-plugin' );
 		} else {
 			$can_deliver = false;
 		}
@@ -112,7 +112,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 			);
 			$this->add_rate( $rate );
 		} else {
-			$my_error_message = __( 'Sorry, your address is too far away' );
+			$my_error_message = __( 'Sorry, your address is too far away', 'cms-plugin' );
 		}
 	}
 
@@ -131,7 +131,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	 */
 	private function google_distance($store_address, $client_address, $key) {
 		if ( empty( $key ) ) {
-			throw new Exception( __( 'No API Key. Contact site owner.' ) );
+			throw new Exception( __( 'No API Key. Contact site owner.', 'cms-plugin' ) );
 		}
 
 		$url = $this->prepare_url( $store_address, $client_address, $key );
@@ -139,7 +139,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$request = wp_remote_get( $url );
 
 		if( is_wp_error( $request ) ) {
-			throw new Exception( __( 'Cannot connect to remote API. Contact site owner.' ) );
+			throw new Exception( __( 'Cannot connect to remote API. Contact site owner.', 'cms-plugin' ) );
 		}
 
 		$body = wp_remote_retrieve_body( $request );
@@ -147,26 +147,26 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$data = json_decode( $body );
 
 		if ( empty( $data ) ) {
-			throw new Exception( __( 'Cannot receive data from remote API. Contact site owner.' ) );
+			throw new Exception( __( 'Cannot receive data from remote API. Contact site owner.', 'cms-plugin' ) );
 		}
 
 		if ( $data->status != 'OK' ) {
-			throw new Exception( __( 'Bad response from remote API. Contact site owner.' ) );
+			throw new Exception( __( 'Bad response from remote API. Contact site owner.', 'cms-plugin' ) );
 		}
 
 		$rows = $data->rows;
 		if ( count( $rows ) != 1 ) {
-			throw new Exception( __( 'Address not found. Enter correct address.' ) );
+			throw new Exception( __( 'Address not found. Enter correct address.', 'cms-plugin' ) );
 		}
 		
 		$elements = $rows[0]->elements;
 		if ( count( $elements ) != 1 ) {
-			throw new Exception( __( 'Address not found. Enter correct address.' ) );
+			throw new Exception( __( 'Address not found. Enter correct address.', 'cms-plugin' ) );
 		}
 
 		$element = $elements[0];
 		if ( $element->status != 'OK' ) {
-			throw new Exception( __( 'Address not found. Enter correct address.' ) );
+			throw new Exception( __( 'Address not found. Enter correct address.', 'cms-plugin' ) );
 		}
 
 		return $element;
@@ -213,7 +213,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	 */
 	private function google_coordinates($address, $key) {
 		if ( empty( $key ) ) {
-			throw new Exception( __( 'No API Key. Contact site owner.' ) );
+			throw new Exception( __( 'No API Key. Contact site owner.', 'cms-plugin' ) );
 		}
 
 		$address = urlencode( trim( $address ) );
@@ -224,7 +224,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$request = wp_remote_get( $url );
 
 		if( is_wp_error( $request ) ) {
-			throw new Exception( __( 'Cannot connect to remote API. Contact site owner.' ) );
+			throw new Exception( __( 'Cannot connect to remote API. Contact site owner.', 'cms-plugin' ) );
 		}
 
 		$body = wp_remote_retrieve_body( $request );
@@ -232,16 +232,16 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$data = json_decode( $body );
 
 		if ( empty( $data ) ) {
-			throw new Exception( __( 'Cannot receive data from remote API. Contact site owner.' ) );
+			throw new Exception( __( 'Cannot receive data from remote API. Contact site owner.', 'cms-plugin' ) );
 		}
 
 		if ( $data->status != 'OK' ) {
-			throw new Exception( __( 'Bad response from remote API. Contact site owner.' ) );
+			throw new Exception( __( 'Bad response from remote API. Contact site owner.', 'cms-plugin' ) );
 		}
 
 		$results = $data->results;
 		if ( count( $results ) != 1 ) {
-			throw new Exception( __( 'Address not found. Enter correct address.' ) );
+			throw new Exception( __( 'Address not found. Enter correct address.', 'cms-plugin' ) );
 		}
 		
 		$result = $results[0];

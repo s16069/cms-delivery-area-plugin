@@ -1,0 +1,113 @@
+# Copyright (C) 2020 
+# This file is distributed under the same license as the cms-delivery-area-plugin plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: cms-delivery-area-plugin 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cms-delivery-area-plugin\n"
+"Last-Translator: dupa <dupa@dupa.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-02-01T10:31:05+00:00\n"
+"PO-Revision-Date: 2020-02-01 12:07+0100\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: cms-plugin\n"
+
+#. Plugin Name of the plugin
+#. Description of the plugin
+msgid "cms-delivery-area-plugin"
+msgstr "cms-delivery-area-plugin"
+
+#: class-wc-shipping-area-rate.php:21
+#: class-wc-shipping-area-rate.php:22
+msgid "Area Rate Shipping method"
+msgstr "Strefowy Koszt Dostawy"
+
+#: class-wc-shipping-area-rate.php:54
+msgid "Enter correct address"
+msgstr "Wprowadź poprawny adres"
+
+#: class-wc-shipping-area-rate.php:56
+msgid "Error: "
+msgstr "Błąd: "
+
+#: class-wc-shipping-area-rate.php:70
+msgid "Please enter delivery address"
+msgstr "Wprowadź adres dostawy"
+
+#: class-wc-shipping-area-rate.php:95
+msgid "Zone 1"
+msgstr "Strefa 1"
+
+#: class-wc-shipping-area-rate.php:98
+msgid "Zone 2"
+msgstr "Strefa 2"
+
+#: class-wc-shipping-area-rate.php:101
+msgid "Zone 3"
+msgstr "Strefa 3"
+
+#: class-wc-shipping-area-rate.php:115
+msgid "Sorry, your address is too far away"
+msgstr "Niestety Twój adres jest za daleko"
+
+#: class-wc-shipping-area-rate.php:134
+#: class-wc-shipping-area-rate.php:216
+msgid "No API Key. Contact site owner."
+msgstr "Brak klucza API. Skontaktuj się z administatorem strony."
+
+#: class-wc-shipping-area-rate.php:142
+#: class-wc-shipping-area-rate.php:227
+msgid "Cannot connect to remote API. Contact site owner."
+msgstr "Nie można połączyć się ze zdalnym API. Skontaktuj się z administatorem strony."
+
+#: class-wc-shipping-area-rate.php:150
+#: class-wc-shipping-area-rate.php:235
+msgid "Cannot receive data from remote API. Contact site owner."
+msgstr "Nie można otrzymać danych ze zdalnego API. Skontaktuj się z administatorem strony."
+
+#: class-wc-shipping-area-rate.php:154
+#: class-wc-shipping-area-rate.php:239
+msgid "Bad response from remote API. Contact site owner."
+msgstr "Zła odpowiedź ze zdalnego API. Skontaktuj się z administatorem strony."
+
+#: class-wc-shipping-area-rate.php:159
+#: class-wc-shipping-area-rate.php:164
+#: class-wc-shipping-area-rate.php:169
+#: class-wc-shipping-area-rate.php:244
+msgid "Address not found. Enter correct address."
+msgstr "Nie znaleziono adresu. Wprowadź poprwany adres"
+
+#: settings-area-rate.php:7
+msgid "Backend API Key"
+msgstr "Klucz API (Backend)"
+
+#: settings-area-rate.php:13
+msgid "Frontend API Key"
+msgstr "Klucz API (Frontend)"
+
+#: settings-area-rate.php:19
+msgid "Zone 1 distance (m)"
+msgstr "Zakres Strefy 1 (m)"
+
+#: settings-area-rate.php:25
+msgid "Zone 1 Cost"
+msgstr "Koszt w Strefie 1"
+
+#: settings-area-rate.php:32
+msgid "Zone 2 distance (m)"
+msgstr "Zakres Strefy 2 (m)"
+
+#: settings-area-rate.php:38
+msgid "Zone 2 Cost"
+msgstr "Koszt w Strefie 2"
+
+#: settings-area-rate.php:45
+msgid "Zone 3 distance (m)"
+msgstr "Zakres Strefy 3 (m)"
+
+#: settings-area-rate.php:51
+msgid "Zone 3 Cost"
+msgstr "Koszt w Strefie 3"
+
