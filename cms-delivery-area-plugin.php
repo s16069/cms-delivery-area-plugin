@@ -37,8 +37,3 @@ function add_shipping_method( $shipping_methods ) {
 
 	return $shipping_methods;
 }
-
-add_filter( 'woocommerce_no_available_payment_methods_message', 'make_no_available_payment_methods_message' );
-function make_no_available_payment_methods_message() {
-	return 'Sorry, we cannot recognise your address.';
-}

@@ -2,6 +2,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+$my_error_message = '';
+
 /**
  * WC_Shipping_Area_Rate class.
  */
@@ -13,7 +15,6 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	 * @param int $instance_id Shipping method instance ID.
 	 */
 	public function __construct( $instance_id = 0 ) {
-
 		$this->id                    = 'area_rate';
 		$this->instance_id           = absint( $instance_id );
 		$this->method_title          = __( 'Area Rate Shipping Method' );
@@ -27,6 +28,9 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$this->init();
 
 		add_action( 'woocommerce_update_options_shipping_' . $this->id, array( $this, 'process_admin_options' ) );
+
+		add_filter( 'woocommerce_no_available_payment_methods_message', [ $this, 'make_no_available_payment_methods_message' ] );
+		add_filter( 'woocommerce_no_shipping_available_html', [ $this, 'make_no_available_payment_methods_message' ] );		
 	}
 
 	/**
@@ -44,6 +48,13 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$this->zone_3_cost          = $this->get_option( 'zone_3_cost' );
 	}
 
+	public function make_no_available_payment_methods_message() {
+		global $my_error_message;
+
+		$msg = empty( $my_error_message ) ? __ ( 'Enter correct address' ) : $my_error_message;
+
+		return 'Error: ' . $msg;
+	}
 
 	/**
 	 * Calculate the shipping costs.
@@ -51,20 +62,29 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	 * @param array $package Package of items from cart.
 	 */
 	public function calculate_shipping( $package = array() ) {
+		global $my_error_message;
 		
 		$store_address = $this->get_store_address();
 		$client_address = $this->get_client_address( $package['destination'] );
 		if ($client_address === null) {
+			$my_error_message = __( 'Please enter delivery address' );
 			return;
 		}
 
-		$data = $this->google_distance( $store_address, $client_address, $this->backend_key );
-		if ($data === null) {
-			return;
-		}
+		try {
+			$data = $this->google_distance( $store_address, $client_address, $this->backend_key );
 
-		$distance_val = $data->distance->value;
-		$distance_text = $data->distance->text;
+			$this->process_distance( $data->distance );
+		} catch (Exception $e) {
+			$my_error_message = $e->getMessage();
+		}
+	}
+
+	private function process_distance( $distance ) {
+		global $my_error_message;
+
+		$distance_val = $distance->value;
+		$distance_text = $distance->text;
 
 		$cost = $this->default_cost;
 		$label = '';
@@ -72,13 +92,13 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 
 		if ( $distance_val < $this->zone_1_distance) {
 			$cost = $this->zone_1_cost;
-			$label = 'Zone 1';
+			$label = __( 'Zone 1' );
 		} else if ( $distance_val < $this->zone_2_distance) {
 			$cost = $this->zone_2_cost;
-			$label = 'Zone 2';
+			$label = __( 'Zone 2' );
 		} else if ( $distance_val < $this->zone_3_distance) {
 			$cost = $this->zone_3_cost;
-			$label = 'Zone 3';
+			$label = __( 'Zone 3' );
 		} else {
 			$can_deliver = false;
 		}
@@ -91,6 +111,8 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 				'package' => $package,
 			);
 			$this->add_rate( $rate );
+		} else {
+			$my_error_message = __( 'Sorry, your address is too far away' );
 		}
 	}
 
@@ -109,7 +131,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	 */
 	private function google_distance($store_address, $client_address, $key) {
 		if ( empty( $key ) ) {
-			return null; // TODO
+			throw new Exception( __( 'No API Key. Contact site owner.' ) );
 		}
 
 		$url = $this->prepare_url( $store_address, $client_address, $key );
@@ -117,7 +139,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$request = wp_remote_get( $url );
 
 		if( is_wp_error( $request ) ) {
-			return null;	// TODO
+			throw new Exception( __( 'Cannot connect to remote API. Contact site owner.' ) );
 		}
 
 		$body = wp_remote_retrieve_body( $request );
@@ -125,26 +147,26 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$data = json_decode( $body );
 
 		if ( empty( $data ) ) {
-			return null; // TODO
+			throw new Exception( __( 'Cannot receive data from remote API. Contact site owner.' ) );
 		}
 
 		if ( $data->status != 'OK' ) {
-			return null; // TODO
+			throw new Exception( __( 'Bad response from remote API. Contact site owner.' ) );
 		}
 
 		$rows = $data->rows;
 		if ( count( $rows ) != 1 ) {
-			return null; // TODO
+			throw new Exception( __( 'Address not found. Enter correct address.' ) );
 		}
 		
 		$elements = $rows[0]->elements;
 		if ( count( $elements ) != 1 ) {
-			return null; // TODO
+			throw new Exception( __( 'Address not found. Enter correct address.' ) );
 		}
 
 		$element = $elements[0];
 		if ( $element->status != 'OK' ) {
-			return null; // TODO
+			throw new Exception( __( 'Address not found. Enter correct address.' ) );
 		}
 
 		return $element;
@@ -191,7 +213,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	 */
 	private function google_coordinates($address, $key) {
 		if ( empty( $key ) ) {
-			return null; // TODO
+			throw new Exception( __( 'No API Key. Contact site owner.' ) );
 		}
 
 		$address = urlencode( trim( $address ) );
@@ -202,7 +224,7 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$request = wp_remote_get( $url );
 
 		if( is_wp_error( $request ) ) {
-			return null;	// TODO
+			throw new Exception( __( 'Cannot connect to remote API. Contact site owner.' ) );
 		}
 
 		$body = wp_remote_retrieve_body( $request );
@@ -210,16 +232,16 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 		$data = json_decode( $body );
 
 		if ( empty( $data ) ) {
-			return null; // TODO
+			throw new Exception( __( 'Cannot receive data from remote API. Contact site owner.' ) );
 		}
 
 		if ( $data->status != 'OK' ) {
-			return null; // TODO
+			throw new Exception( __( 'Bad response from remote API. Contact site owner.' ) );
 		}
 
 		$results = $data->results;
 		if ( count( $results ) != 1 ) {
-			return null; // TODO
+			throw new Exception( __( 'Address not found. Enter correct address.' ) );
 		}
 		
 		$result = $results[0];
@@ -242,6 +264,9 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 	}
 
 	public function get_admin_options_html() {
+		if ( !is_admin() ) {
+			return '<div>WTF render admin page in non-admin request???</div>';
+		}
 		
 		$options_html = parent::get_admin_options_html();
 		$map_html = $this->get_map_html();
@@ -256,19 +281,20 @@ class WC_Shipping_Area_Rate extends WC_Shipping_Method {
 			return 'Enter Api Keys to show map';
 		} else {
 
-			$coordinates = $this->google_coordinates( $this->get_store_address(), $this->backend_key );
+			try {
+				$coordinates = $this->google_coordinates( $this->get_store_address(), $this->backend_key );
 
-			if ( $coordinates === null ) {
-				return 'Store location not found';
+				$key = urlencode( trim( $this->frontend_key ) );
+				$url = 'https://maps.googleapis.com/maps/api/js?key=' . $key;
+	
+				wp_enqueue_script( 'cms-delivery-area-plugin-maps', $url, array('cms-delivery-area-plugin-admin-script') );
+	
+				return '<div id="google-map"></div>' .
+					'<script>(function() { initAreas(); initMap({lat: ' . $coordinates->lat . ', lng: ' . $coordinates->lng .'}); })();</script>';
+	
+			} catch (Exception $e) {
+				return $e->getMessage();
 			}
-
-			$key = urlencode( trim( $this->frontend_key ) );
-			$url = 'https://maps.googleapis.com/maps/api/js?key=' . $key;
-
-			wp_enqueue_script( 'cms-delivery-area-plugin-maps', $url, array('cms-delivery-area-plugin-admin-script') );
-
-			return '<div id="google-map"></div>' .
-				'<script>(function() { initAreas(); initMap({lat: ' . $coordinates->lat . ', lng: ' . $coordinates->lng .'}); })();</script>';
 		}
 	}
 }
